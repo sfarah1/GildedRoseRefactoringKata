@@ -25,3 +25,5 @@ task texttest(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     args "30"
 }
+
+
