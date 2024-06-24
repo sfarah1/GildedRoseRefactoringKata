@@ -20,10 +20,56 @@ test {
     useJUnitPlatform()
 }
 
+task backupBaseline(type: Copy) {
+    from 'baseline_output.txt'
+    into 'backup/'
+    rename { 'baseline_output_backup.txt' }
+    doFirst {
+        println "Backing up baseline output"
+    }
+}
+
+task restoreBaseline(type: Copy) {
+    from 'backup/baseline_output_backup.txt'
+    into '.'
+    rename { 'baseline_output.txt' }
+    doFirst {
+        println "Restoring baseline output"
+    }
+}
+
+task createBaseline(type: JavaExec) {
+    main = "com.gildedrose.TexttestFixture"
+    classpath = sourceSets.test.runtimeClasspath
+    args "30"
+    standardOutput = new FileOutputStream(file("${projectDir}/baseline_output.txt"))
+    doFirst {
+        println "Creating baseline output with args: 30"
+    }
+    doLast {
+        println "Baseline output created. Output written to ${projectDir}/baseline_output.txt"
+    }
+    finalizedBy backupBaseline
+}
+
 task texttest(type: JavaExec) {
     main = "com.gildedrose.TexttestFixture"
     classpath = sourceSets.test.runtimeClasspath
     args "30"
+    standardOutput = new FileOutputStream(file("${projectDir}/current_output.txt"))
+    doFirst {
+        println "Running TexttestFixture with args: 30"
+    }
+    doLast {
+        println "TexttestFixture task completed. Output written to ${projectDir}/current_output.txt"
+    }
+    finalizedBy restoreBaseline
 }
 
-
+task diffOutputs(type: Exec) {
+    dependsOn texttest
+    doFirst {
+        println "Comparing baseline_output.txt and current_output.txt"
+    }
+    commandLine 'diff', 'baseline_output.txt', 'current_output.txt'
+}
