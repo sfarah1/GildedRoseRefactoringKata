@@ -1,29 +1,31 @@
 package com.gildedrose;
 
-import java.util.HashMap;
-import java.util.Map;
-
 class GildedRose {
     Item[] items;
 
-    private final Map<String, ItemUpdater> updaterMap = new HashMap<>();
-
     public GildedRose(Item[] items) {
         this.items = items;
-        updaterMap.put("Aged Brie", new AgedBrieUpdater());
-        updaterMap.put("Sulfuras, Hand of Ragnaros", new SulfurasUpdater());
-        updaterMap.put("Backstage passes to a TAFKAL80ETC concert", new BackstagePassUpdater());
-        updaterMap.put("Conjured Mana Cake", new ConjuredItemUpdater());
     }
 
     public void updateQuality() {
         for (Item item : items) {
-            ItemUpdater updater = getUpdater(item);
+            ItemUpdater updater = getItemUpdater(item);
             updater.update(item);
         }
     }
 
-    private ItemUpdater getUpdater(Item item) {
-        return updaterMap.getOrDefault(item.getName(), new NormalItemUpdater());
+    private ItemUpdater getItemUpdater(Item item) {
+        switch (item.name) {
+            case "Aged Brie":
+                return new AgedBrieUpdater();
+            case "Sulfuras, Hand of Ragnaros":
+                return new SulfurasUpdater();
+            case "Backstage passes to a TAFKAL80ETC concert":
+                return new BackstagePassUpdater();
+            case "Conjured Mana Cake":
+                return new ConjuredItemUpdater();
+            default:
+                return new NormalItemUpdater();
+        }
     }
 }
