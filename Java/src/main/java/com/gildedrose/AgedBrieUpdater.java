@@ -3,14 +3,14 @@ package com.gildedrose;
 public class AgedBrieUpdater implements ItemUpdater {
     @Override
     public void update(Item item) {
-        item.setSellIn(item.getSellIn() - 1);
-
-        if (item.getQuality() < 50) {
-            item.setQuality(item.getQuality() + 1);
+        if (item.quality < 50) {
+            item.quality++;
         }
 
-        if (item.getSellIn() < 0 && item.getQuality() < 50) {
-            item.setQuality(item.getQuality() + 1);
+        item.sellIn--;
+
+        if (item.sellIn < 0 && item.quality < 50) {
+            item.quality++;
         }
     }
 }

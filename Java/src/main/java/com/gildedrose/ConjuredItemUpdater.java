@@ -3,18 +3,14 @@ package com.gildedrose;
 public class ConjuredItemUpdater implements ItemUpdater {
     @Override
     public void update(Item item) {
-        item.setSellIn(item.getSellIn() - 1);
-
-        if (item.getQuality() > 0) {
-            item.setQuality(item.getQuality() - 2);
+        if (item.quality > 0) {
+            item.quality -= 2;
         }
 
-        if (item.getSellIn() < 0 && item.getQuality() > 0) {
-            item.setQuality(item.getQuality() - 2);
-        }
+        item.sellIn--;
 
-        if (item.getQuality() < 0) {
-            item.setQuality(0);
+        if (item.sellIn < 0 && item.quality > 0) {
+            item.quality -= 2;
         }
     }
 }
